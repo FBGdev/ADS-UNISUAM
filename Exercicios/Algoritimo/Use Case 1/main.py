@@ -1,75 +1,110 @@
-import json
-from urllib import request
+import time
+import requests
+import os
 
-with open("db.json") as f:
-    data = json.load(f)
+url = 'http://127.0.0.1:5000/alunos'
 
-aluno = data["alunos"][0]
+resposta = requests.get(url)
 
-from os import wait
+dados = resposta.json()
 
+def listar_alunos():
+    clear_screen()
+    print("Lista de Alunos:")
+    for aluno in dados:
+        print(f"ID: {aluno['id']}, Nome: {aluno['nome']}, Nota 1: {aluno['n1']}, Nota 2: {aluno['n2']}, Presença: {aluno['presenca']}")
 
-name = request.get("name")
-n1 = request.get("n1")
-n2 = request.get("n2")
-aulas = 1.400
-pres = request.get("presenca")
-media = None
+def adicionar_aluno():
+    novo_aluno = input("Digite o nome do aluno: ")
+    n1 = float(input("Digite a Nota 1 do aluno: "))
+    n2 = float(input("Digite a Nota 2 do aluno: "))
+    presenca = int(input("Digite a presença do aluno: "))
+    resposta = requests.post(url, json={"nome": novo_aluno, "n1": n1, "n2": n2, "presenca": presenca})
+    print(resposta.json())
 
+def buscar_aluno():
+    id_aluno = int(input("Digite o ID do aluno: "))
+    resposta = requests.get(f"{url}/{id_aluno}")
+    print(resposta.json())
 
-def situacao_final():
-    if media >= 7:
-        print("voce esta aprovado")
-    elif media > 4 or media < 7:
-        print("voce esta de prova final")
+def del_aluno():
+    id_aluno = int(input("Digite o ID do aluno: "))
+    resposta = requests.delete(f"{url}/{id_aluno}")
+    print(resposta.json())
+
+def atualizar_aluno():
+    id_aluno = int(input("Digite o ID do aluno: "))
+    novo_nome = input("Digite o novo nome do aluno: ")
+    n1 = float(input("Digite a nova Nota 1 do aluno: "))
+    n2 = float(input("Digite a nova Nota 2 do aluno: "))
+    presenca = int(input("Digite a nova presença do aluno: "))
+    resposta = requests.put(f"{url}/{id_aluno}", json={"nome": novo_nome, "n1": n1, "n2": n2, "presenca": presenca})
+    print(resposta.json())
+
+def calcular_media():
+    id_aluno = int(input("Digite o ID do aluno: "))
+    resposta = requests.get(f"{url}/{id_aluno}")
+    aluno = resposta.json()
+    if aluno:
+        media = (aluno['n1'] + aluno['n2']) / 2
+        print(f"A média do aluno {aluno['nome']} é: {media}")
     else:
-        print("voce esta reprovado por nota")
+        print("Aluno não encontrado.")
 
-
-def presenca():
-    if pres >= aulas * 0.25:
-        print("voce tem a frequencia necessaria")
-    else:
-        print("voce reprovou por faltas")
-
-
-def calcular_media(n1, n2):
-    return (n1 + n2) / 2
-
-
-media = calcular_media(n1, n2)
-
-
-def finalizar_programa():
-    print("Programa sera finalizado em 3 segundos.")
-    wait(3)
+def sair():
+    limpar()
+    print("Saindo do programa em 5 segundos.")
+    time.sleep(5)
     exit()
 
+def limpar():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-def menu():
-    print("1. Calcular média")
-    print("2. Verificar presença")
-    print("3. Verificar situação final")
-    print("4. Sair")
-
-def login():
-    name = input("Digite seu nome: ")
-    name = name.strip()
-    if name 
-
-
+def situacao_final():
+    id_aluno = int(input("Digite o ID do aluno: "))
+    resposta = requests.get(f"{url}/{id_aluno}")
+    aluno = resposta.json()
+    if aluno:
+        media = (aluno['n1'] + aluno['n2']) / 2
+        if media >= 7 and aluno['presenca'] >= 350:
+            print(f"O aluno {aluno['nome']} está aprovado.")
+        else:
+            print(f"O aluno {aluno['nome']} está reprovado.")
+    else:
+        print("Aluno não encontrado.")
 
 def main():
-    global name, n1, n2, pres
-    name = aluno["nome"]
-    n1 = aluno["n1"]
-    n2 = aluno["n2"]
-    pres = aluno["presenca"]
-    media = calcular_media(n1, n2)
-    situacao_final()
-    presenca()
-    finalizar_programa()
+    while True:
+        print("\nMenu:")
+        print("1. listar alunos")
+        print("2. adicionar aluno")
+        print("3. buscar aluno")
+        print("4. deletar aluno")
+        print("5. atualizar aluno")
+        print("6. calcular média")
+        print("7. verificar situação final")
+        print("8. sair")
 
+        escolha = input("Escolha uma opção: ")
+
+        if escolha == '1':
+            listar_alunos()
+        elif escolha == '2':
+            adicionar_aluno()
+        elif escolha == '3':
+            buscar_aluno()
+        elif escolha == '4':
+            del_aluno()
+        elif escolha == '5':
+            atualizar_aluno()
+        elif escolha == '6':
+            calcular_media()
+        elif escolha == '7':
+            situacao_final()
+        elif escolha == '8':
+            sair()
+        else:
+            print("Opção inválida, tente novamente.")
 
 if __name__ == "__main__":
     main()
