@@ -9,8 +9,10 @@ resposta = requests.get(url)
 dados = resposta.json()
 
 def listar_alunos():
-    clear_screen()
-    print("Lista de Alunos:")
+    limpar()
+    print("Lista de Alunos:\n")
+    resposta = requests.get(f"{url}")
+    dados = resposta.json()
     for aluno in dados:
         print(f"ID: {aluno['id']}, Nome: {aluno['nome']}, Nota 1: {aluno['n1']}, Nota 2: {aluno['n2']}, Presença: {aluno['presenca']}")
 

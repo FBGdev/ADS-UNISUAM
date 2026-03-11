@@ -17,6 +17,13 @@ def adicionar_aluno():
 
     novo_aluno = request.json
 
+    if dados["alunos"]:
+        novo_id = dados["alunos"][-1]["id"] + 1
+    else:
+        novo_id = 1
+
+    novo_aluno["id"] = novo_id
+
     dados["alunos"].append(novo_aluno)
 
     with open(arquivo, "w") as f:
