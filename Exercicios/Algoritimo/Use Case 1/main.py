@@ -13,9 +13,10 @@ def listar_alunos():
     print("Lista de Alunos:\n")
     resposta = requests.get(f"{url}")
     dados = resposta.json()
-    alunos = dados["alunos"]
-    for aluno in alunos:
+    
+    for aluno in dados:
         print(f"ID: {aluno['id']}, Nome: {aluno['nome']}, Nota 1: {aluno['n1']}, Nota 2: {aluno['n2']}, Presença: {aluno['presenca']}")
+
 
 def adicionar_aluno():
     novo_aluno = input("Digite o nome do aluno: ")
