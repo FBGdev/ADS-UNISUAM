@@ -1,0 +1,16 @@
+[
+    {
+        "nome": "fabiano",
+        "nota1": 100.0,
+        "nota2": 10.0,
+        "presenca": 300,
+        "id": 2
+    },
+    {
+        "nome": "Fabiano",
+        "nota1": 10.0,
+        "nota2": 8.0,
+        "presenca": 351,
+        "id": 3
+    }
+]
